@@ -22,7 +22,7 @@ int main()
         {
             fgets(inputStream,10000,stdin);
             inputStream[strcspn(inputStream,"\0")] = '\0';
-            printf("%s",inputStream);
+            printf("%s\n",inputStream);
             inputStream =(char*) realloc(inputStream,strlen(inputStream)+1);
             words = calloc(10001,sizeof(char*));
             int startIndex = 0;
