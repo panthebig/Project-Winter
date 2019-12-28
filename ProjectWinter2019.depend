@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1577496340 source:c:\users\tetratab\desktop\projectwinter2019\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
