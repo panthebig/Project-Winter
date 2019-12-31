@@ -10,9 +10,14 @@ int main()
     char **words;
     char **sentence;
     char **wordsUnique;
+    char **par;
     int wordsCounter = 0;
+    int wordsCounterUnique = 0;
     int sentenceCounter = 0;
-    inputStream = malloc(10001*sizeof(char));
+    int parCounter =0;
+    wordsUnique = calloc(1000,sizeof(char*));
+    par = calloc(1000,sizeof(char*));
+
 
 
     char funq[5];
@@ -21,12 +26,24 @@ int main()
 
         if(strcmp(funq,"ap")== 0)
         {
+            wordsCounter = 0;
+            sentenceCounter = 0;
+            inputStream = malloc(10001*sizeof(char));
+
             fgets(inputStream,10000,stdin);
             inputStream[strcspn(inputStream,"\0")] = '\0';
             inputStream =(char*) realloc(inputStream,strlen(inputStream)+1);
+
+            par[parCounter]=calloc(10000,sizeof(char));
+            strcpy(par[parCounter],inputStream);
+            par[parCounter] = realloc(par[parCounter],strlen(par[parCounter])+1);
+            printf("\n this is a paragraph : %s",par[parCounter]);
+            parCounter++;
+
             words = calloc(10001,sizeof(char*));
             int startIndex = 0;
-            for(int endIndex =0;endIndex<=strlen(inputStream);endIndex++)
+            int endIndex ;
+            for( endIndex =0;endIndex<=strlen(inputStream);endIndex++)
             {
                 if (inputStream[endIndex]==' ' || endIndex == (strlen(inputStream)-1) || inputStream[endIndex]=='.' || inputStream[endIndex]=='!' || inputStream[endIndex]=='?' ||inputStream[endIndex]==';')
                 {
@@ -36,7 +53,11 @@ int main()
                     words[wordsCounter] = realloc(words[wordsCounter],strlen(words[wordsCounter])*sizeof(char) + 1);
                     printf("%s\n",words[wordsCounter]);
                     wordsCounter++;
-                    startIndex = endIndex + 1;
+                    do{
+                       endIndex++;
+                    }while(!((inputStream[endIndex]>='a'&&inputStream[endIndex]<='z')|| (inputStream[endIndex]>='A'&&inputStream[endIndex]<='Z')));
+                    startIndex=endIndex;
+
 
                 }
             }
@@ -46,7 +67,7 @@ int main()
             words =  realloc(words,wordsCounter*sizeof(char*));
             sentence = calloc(5000,sizeof(char*));
             startIndex = 0;
-            for(int endIndex =0;endIndex<strlen(inputStream);endIndex++)
+            for( endIndex =0;endIndex<strlen(inputStream);endIndex++)
             {
                 if(inputStream[endIndex]=='.' || inputStream[endIndex]=='!' || inputStream[endIndex]=='?' ||inputStream[endIndex]==';' || endIndex == (strlen(inputStream)-1))
                 {
@@ -56,7 +77,10 @@ int main()
                     sentence[sentenceCounter] = realloc(sentence[sentenceCounter],strlen(sentence[sentenceCounter])*sizeof(char) + 1);
                     printf("%s\n",sentence[sentenceCounter]);
                     sentenceCounter++;
-                    startIndex = endIndex+1;
+                    do{
+                       endIndex++;
+                    }while(!((inputStream[endIndex]>='a'&&inputStream[endIndex]<='z')|| (inputStream[endIndex]>='A'&&inputStream[endIndex]<='Z')));
+                    startIndex=endIndex;
 
                 }
             }
@@ -64,11 +88,8 @@ int main()
 
             printf("num of seentences = %d",sentenceCounter);
 
-        }else if(strcmp(funq,"fw")==0)
-        {
-            int wordsCounterUnique = 0;
             char exist;
-            wordsUnique = calloc(wordsCounter,sizeof(char*));
+            //wordsUnique = malloc((wordsCounter+wordsCounterUnique)*sizeof(char*));
             for(int i =0;i<wordsCounter;i++)
             {
                 exist=0;
@@ -87,9 +108,56 @@ int main()
                 }
 
             }
-            printf("%d",wordsCounterUnique);
+            printf("\n%d\n",wordsCounterUnique);
+
+            free(words);
+            free(sentence);
+            free(inputStream);
+
+
+        }else if(strcmp(funq,"fw")==0)
+        {
+            char* fw;
+            fw = calloc(1001,sizeof(char));
+            fgets(fw,1000,stdin);
+            fw = realloc(fw ,sizeof(char)*strlen(fw)+1);
+            fw[strcspn(fw,"\n")]='\0';
+
+
             for(int i =0;i<wordsCounterUnique;i++)
-                printf("\n%s",wordsUnique[i]);
+                if(strstr(wordsUnique[i],fw)!= NULL)
+                    printf("%s\n",wordsUnique[i]);
+
+            free(fw);
+
+        }else if(strcmp(funq,"fs")==0)
+        {
+            char* fs;
+            fs = calloc(1001,sizeof(char));
+            fgets(fs,1000,stdin);
+            fs = realloc(fs ,sizeof(char)*strlen(fs)+1);
+            fs[strcspn(fs,"\n")]='\0';
+
+            for(int i =0;i<sentenceCounter;i++)
+                if(strstr(sentence[i],fs)!=NULL)
+                    printf("%s\n",sentence[i]);
+
+            free(fs);
+
+        }else if(strcmp(funq,"fp")==0)
+        {
+            char* fp;
+            fp = calloc(1001,sizeof(char));
+            fgets(fp,1000,stdin);
+            fp = realloc(fp ,sizeof(char)*strlen(fp)+1);
+            fp[strcspn(fp,"\n")]='\0';
+
+            for(int i =0;i<parCounter;i++)
+                if(strstr(par[i],fp)!=NULL)
+                    printf("%s",par[i]);
+
+            free(fp);
+
         }
 
 
