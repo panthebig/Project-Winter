@@ -10,19 +10,22 @@ int main()
     char **words;
     char **sentence;
     char **wordsUnique;
+    int *wordsUniqueRepeat;
     char **par;
     int wordsCounter = 0;
     int wordsCounterUnique = 0;
     int sentenceCounter = 0;
     int parCounter =0;
-    wordsUnique = calloc(1000,sizeof(char*));
+    wordsUnique = calloc(5000,sizeof(char*));
+    wordsUniqueRepeat = calloc(5000,sizeof(int));
     par = calloc(1000,sizeof(char*));
 
 
 
-    char funq[5];
+    char funq[10];
     do{
-        gets(funq);
+        fgets(funq,10,stdin);
+        funq[strcspn(funq,"\n")] = '\0';
 
         if(strcmp(funq,"ap")== 0)
         {
@@ -37,7 +40,7 @@ int main()
             par[parCounter]=calloc(10000,sizeof(char));
             strcpy(par[parCounter],inputStream);
             par[parCounter] = realloc(par[parCounter],strlen(par[parCounter])+1);
-            printf("\n this is a paragraph : %s",par[parCounter]);
+            //printf("\n this is a paragraph : %s",par[parCounter]);
             parCounter++;
 
             words = calloc(10001,sizeof(char*));
@@ -51,7 +54,6 @@ int main()
                     memcpy(words[wordsCounter],&inputStream[startIndex],(endIndex-startIndex)*sizeof(char));
                     words[wordsCounter][strlen(words[wordsCounter])]='\0';
                     words[wordsCounter] = realloc(words[wordsCounter],strlen(words[wordsCounter])*sizeof(char) + 1);
-                    printf("%s\n",words[wordsCounter]);
                     wordsCounter++;
                     do{
                        endIndex++;
@@ -62,7 +64,6 @@ int main()
                 }
             }
 
-            printf("num of words %d",wordsCounter);
 
             words =  realloc(words,wordsCounter*sizeof(char*));
             sentence = calloc(5000,sizeof(char*));
@@ -75,7 +76,7 @@ int main()
                     strncpy(sentence[sentenceCounter],&inputStream[startIndex],(endIndex-startIndex)*sizeof(char));
                     sentence[sentenceCounter][strlen(sentence[sentenceCounter])] = '\0';
                     sentence[sentenceCounter] = realloc(sentence[sentenceCounter],strlen(sentence[sentenceCounter])*sizeof(char) + 1);
-                    printf("%s\n",sentence[sentenceCounter]);
+                    //printf("%s\n",sentence[sentenceCounter]);
                     sentenceCounter++;
                     do{
                        endIndex++;
@@ -86,10 +87,10 @@ int main()
             }
             sentence = realloc(sentence,sentenceCounter*sizeof(char*));
 
-            printf("num of seentences = %d",sentenceCounter);
+            //printf("num of seentences = %d",sentenceCounter);
 
             char exist;
-            //wordsUnique = malloc((wordsCounter+wordsCounterUnique)*sizeof(char*));
+
             for(int i =0;i<wordsCounter;i++)
             {
                 exist=0;
@@ -98,17 +99,20 @@ int main()
                     if(strcmp(words[i],wordsUnique[j])==0)
                     {
                         exist = 1;
+                        wordsUniqueRepeat[j]++;
+
                     }
                 }
                 if(!(exist))
                 {
                     wordsUnique[wordsCounterUnique] = calloc(strlen(words[i]),sizeof(char));
                     memcpy(wordsUnique[wordsCounterUnique],words[i],strlen(words[i])+1);
+                    wordsUniqueRepeat[wordsCounterUnique]=1;
                     wordsCounterUnique++;
                 }
 
             }
-            printf("\n%d\n",wordsCounterUnique);
+            //printf("\n%d\n",wordsCounterUnique);
 
             free(words);
             free(sentence);
@@ -158,13 +162,60 @@ int main()
 
             free(fp);
 
+        }else if(strcmp(funq,"owf")==0)
+        {
+            int i;
+            for(i =0;i<wordsCounterUnique-1;i++)            {
+
+                for(int j = 0;j<wordsCounterUnique-i-1;j++)
+                    if(wordsUniqueRepeat[j]<wordsUniqueRepeat[j+1])
+                    {
+                        int tempint =wordsUniqueRepeat[j];
+                        wordsUniqueRepeat[j] = wordsUniqueRepeat[j+1];
+                        wordsUniqueRepeat[j+1] = tempint;
+                        char *temp= calloc(100,sizeof(char));
+                        strcpy(temp,wordsUnique[j]);
+                        strcpy(wordsUnique[j],wordsUnique[j+1]);
+                        strcpy(wordsUnique[j+1],temp);
+                    }
+
+            }
+
+
+            for(int i =0;i<wordsCounterUnique;i++)
+            {
+                wordsUnique[i][strlen(wordsUnique[i])]='\0';
+                printf("%s [%d]\n",wordsUnique[i],wordsUniqueRepeat[i]);
+            }
+
+
+        }else if(strcmp(funq,"owl")==0)
+        {
+
+            int i;
+            for(i =0;i<wordsCounterUnique-1;i++)            {
+
+                for(int j = 0;j<wordsCounterUnique-i-1;j++)
+                    if(strlen(wordsUnique[j])>strlen(wordsUnique[j+1]))
+                    {
+                        char *temp= calloc(100,sizeof(char));
+                        strcpy(temp,wordsUnique[j]);
+                        strcpy(wordsUnique[j],wordsUnique[j+1]);
+                        strcpy(wordsUnique[j+1],temp);
+                    }
+
+            }
+
+            for(int i =0;i<wordsCounterUnique;i++)
+            {
+                wordsUnique[i][strlen(wordsUnique[i])]='\0';
+                printf("%s [%d]\n",wordsUnique[i],(int) strlen(wordsUnique[i]));
+            }
         }
 
 
     }while(strcmp(funq,"qt"));
 
-
-    //printf("%s",input);
 
     return 0;
 
